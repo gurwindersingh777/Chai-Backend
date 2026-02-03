@@ -16,7 +16,7 @@ app.use(express.static("public"));
 import userRouter from './routes/user.routes.js';
 
 // Calling Routes
-app.use("/api/v1/users",userRouter); // https://localhost:8000/api/v1/users/register
+app.use("/api/v1/users",userRouter); // https://localhost:8000/api/v1/users
 
 
 export  { app };
