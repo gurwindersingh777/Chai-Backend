@@ -58,7 +58,7 @@ const registerUser = AsyncHandler(async (req, res) => {
   if (coverImageLocalPath) coverimage = await uploadOnCloudinary(coverImageLocalPath);
 
   try {
-    const user = await User.create({
+    let user = await User.create({
       fullname,
       username: username.toLowerCase(),
       email,
@@ -67,21 +67,34 @@ const registerUser = AsyncHandler(async (req, res) => {
       "coverimage": coverimage?.url || "",
     })
 
-    const createUser = await User.findById(user._id).select(
-      "-password -refreshToken"
-    )
-    if (!createUser) throw new ApiError(500, "Someting went wrong while registering the user")
+    if (!user) throw new ApiError(500, "Someting went wrong while registering the user")
 
-    return res.status(201).json(
-      new ApiRespone(200, createUser, "User Successfully register ")
-    )
-  } catch (error) {
+    const { accessToken, refreshToken } = generateAccessAndRefreshToken(user._id);
+
+    user.refreshToken = refreshToken;
+    user.save({ validateBeforeSave: false })
+
+    const options = {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    }
+
+    return res
+      .status(201)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(
+        new ApiRespone(200, createUser, "User Successfully register ")
+      )
+  }
+  catch (error) {
     console.log("Failed to register a user", error);
 
     if (avatar) deleteOnCloudinary(avatar.public_id);
     if (coverimage) deleteOnCloudinary(coverimage.public_id);
 
-    throw new ApiError(200, "Error in resgister a user and file deleted from Cloudinary");
+    throw new ApiError(500, "Error in resgister a user and file deleted from Cloudinary");
   }
 })
 const loginUser = AsyncHandler(async (req, res) => {
@@ -120,7 +133,7 @@ const loginUser = AsyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: false, // true in prod
+    secure: false,
     sameSite: "lax",
   }
 

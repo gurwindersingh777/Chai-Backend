@@ -19,6 +19,7 @@ async function uploadOnCloudinary(localFilePath) {
     console.log("File has Successfully Upload on Cloudinary", response.url);
     return response;
   } catch {
+    console.log("Failed to upload file");
     fs.unlinkSync(localFilePath);
     return null;
   }
@@ -30,7 +31,6 @@ async function deleteOnCloudinary(public_id) {
     await cloudinary.uploader.destroy(public_id);
   } catch (error) {
     throw new ApiError(400, "Failed to delete files");
-    return null;
   }
 
 }
