@@ -1,17 +1,54 @@
 import { Video } from "../models/video.model.js"
-import { User } from "../models/user.model.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/AsyncHandler.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import mongoose from "mongoose"
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
-  //TODO: get all videos based on query, sort, pagination
+  const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = "desc", userId } = req.query;
 
+  const pageNumber = Number(page)
+  const limitNumber = Number(limit)
+  const skip = (pageNumber - 1) * limitNumber
+  const sortOrder = sortType === "asc" ? 1 : -1
+  
+  let matchStage = {
+    owner: new mongoose.Types.ObjectId(userId)
+  };
 
-})
+  if (query) {
+    matchStage.title = { $regex: query, $options: "i" }
+  }
+
+  const videos = await Video.aggregate([
+    {
+      $match: matchStage
+    },
+    {
+      $sort: { [sortBy]: sortOrder }
+    },
+    {
+      $skip: skip
+    },
+    {
+      $limit: limitNumber
+    }
+  ]);
+
+  if (videos.length === 0) {
+    throw new ApiError(400, "No videos found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      { videos, page: pageNumber },
+      `Video fetched successfully userID : ${userId}`
+    )
+  );
+});
 
 // DONE
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -43,7 +80,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     videoFile: videoFile?.url,
     thumbnail: thumbnail?.url || "",
     duration: videoFile?.duration,
-    owner: res.user
+    owner: req.user._id
   });
 
   if (!video) {
