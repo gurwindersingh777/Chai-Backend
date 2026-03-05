@@ -1,7 +1,7 @@
 import mongoose, { isValidObjectId } from "mongoose"
 import { Like } from "../models/like.model.js"
 import ApiError from "../utils/ApiError.js";
-import ApiRespone from "../utils/ApiResponse.js";
+import ApiResponse from "../utils/ApiResponse.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 import { Video } from "../models/video.model.js";
 import { Comment } from "../models/comment.model.js";
@@ -26,7 +26,7 @@ const toggleVideoLike = AsyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new ApiRespone(200, true, "Video Unliked successfully")
+        new ApiResponse(200, true, "Video Unliked successfully")
       )
   }
 
@@ -34,7 +34,7 @@ const toggleVideoLike = AsyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiRespone(201, like, "Video liked successfully")
+      new ApiResponse(201, like, "Video liked successfully")
     )
 
 })
@@ -58,7 +58,7 @@ const toggleCommentLike = AsyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new ApiRespone(200, true, "Comment Unliked successfully")
+        new ApiResponse(200, true, "Comment Unliked successfully")
       )
   }
 
@@ -66,7 +66,7 @@ const toggleCommentLike = AsyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiRespone(201, like, "Comment liked successfully")
+      new ApiResponse(201, like, "Comment liked successfully")
     )
 
 })
@@ -90,7 +90,7 @@ const toggleTweetLike = AsyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new ApiRespone(200, true, "Tweet Unliked successfully")
+        new ApiResponse(200, true, "Tweet Unliked successfully")
       )
   }
 
@@ -98,7 +98,7 @@ const toggleTweetLike = AsyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiRespone(201, like, "Tweet liked successfully")
+      new ApiResponse(201, like, "Tweet liked successfully")
     )
 }
 )
@@ -110,14 +110,14 @@ const getLikedVideos = AsyncHandler(async (req, res) => {
 
   if (allLikedVideos.length === 0) {
     return res.status(200).json(
-      new ApiRespone(200, [], "No videos found")
+      new ApiResponse(200, [], "No videos found")
     );
   }
 
   return res
     .status(200)
     .json(
-      new ApiRespone(200, allLikedVideos, "User liked videos fetched successfully")
+      new ApiResponse(200, allLikedVideos, "User liked videos fetched successfully")
     )
 })
 

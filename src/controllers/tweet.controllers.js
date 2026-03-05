@@ -2,7 +2,7 @@ import mongoose, { isValidObjectId } from "mongoose"
 import { Tweet } from "../models/tweet.model.js"
 import { User } from "../models/user.model.js"
 import ApiError from "../utils/ApiError.js";
-import ApiRespone from "../utils/ApiResponse.js";
+import ApiResponse from "../utils/ApiResponse.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 
 const createTweet = AsyncHandler(async (req, res) => {
@@ -24,7 +24,7 @@ const createTweet = AsyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiRespone(201, tweet, "Tweet created successfully")
+      new ApiResponse(201, tweet, "Tweet created successfully")
     )
 })
 
@@ -39,7 +39,7 @@ const getUserTweets = AsyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiRespone(200,tweets,"User all tweets fetched successfully")
+      new ApiResponse(200,tweets,"User all tweets fetched successfully")
     )
 })
 
@@ -71,7 +71,7 @@ const updateTweet = AsyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiRespone(200, updatedTweet, "Tweet upadted successfully")
+      new ApiResponse(200, updatedTweet, "Tweet upadted successfully")
     )
 })
 
@@ -84,7 +84,7 @@ const deleteTweet = AsyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiRespone(200, [], "Tweet deleted successfully")
+      new ApiResponse(200, [], "Tweet deleted successfully")
     )
 })
 

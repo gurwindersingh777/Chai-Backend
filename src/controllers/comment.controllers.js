@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { Comment } from "../models/comment.model.js"
 import ApiError from "../utils/ApiError.js";
-import ApiRespone from "../utils/ApiResponse.js";
+import ApiResponse from "../utils/ApiResponse.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 
 const getVideoComments = AsyncHandler(async (req, res) => {
@@ -41,7 +41,7 @@ const getVideoComments = AsyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiRespone(200, comments, "Comments fetched successfully")
+      new ApiResponse(200, comments, "Comments fetched successfully")
     )
 })
 
@@ -71,7 +71,7 @@ const addComment = AsyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiRespone(201, comment, "Comment added successfully")
+      new ApiResponse(201, comment, "Comment added successfully")
     )
 
 
@@ -104,7 +104,7 @@ const updateComment = AsyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiRespone(200, updatedComment, "Comment updated successfully")
+      new ApiResponse(200, updatedComment, "Comment updated successfully")
     )
 
 })
@@ -118,7 +118,7 @@ const deleteComment = AsyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiRespone(200, {}, "Comment deleted Successfully")
+      new ApiResponse(200, {}, "Comment deleted Successfully")
     )
 })
 
