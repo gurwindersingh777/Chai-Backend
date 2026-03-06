@@ -10,8 +10,9 @@ import { Tweet } from "../models/tweet.model.js";
 const toggleVideoLike = AsyncHandler(async (req, res) => {
   const { videoId } = req.params
   //TODO: toggle like on video
-  if (!videoId) {
-    throw new ApiError(400, "videoId is required")
+
+   if (!isValidObjectId(videoId)) {
+    throw new ApiError(200, "Invalid video id")
   }
 
   const video = await Video.findById(videoId);
@@ -42,8 +43,8 @@ const toggleVideoLike = AsyncHandler(async (req, res) => {
 const toggleCommentLike = AsyncHandler(async (req, res) => {
   const { commentId } = req.params
   //TODO: toggle like on comment
-  if (!commentId) {
-    throw new ApiError(400, "commentId is required")
+  if (!isValidObjectId(commentId)) {
+    throw new ApiError(200, "Invalid comment id")
   }
 
   const comment = await Comment.findById(commentId);
@@ -74,8 +75,8 @@ const toggleCommentLike = AsyncHandler(async (req, res) => {
 const toggleTweetLike = AsyncHandler(async (req, res) => {
   const { tweetId } = req.params
   //TODO: toggle like on tweet
-  if (!tweetId) {
-    throw new ApiError(400, "tweetId is required")
+  if (!isValidObjectId(tweetId)) {
+    throw new ApiError(200, "Invalid tweet id")
   }
 
   const tweet = await Tweet.findById(tweetId);

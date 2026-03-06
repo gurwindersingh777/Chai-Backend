@@ -30,16 +30,16 @@ const createTweet = AsyncHandler(async (req, res) => {
 
 const getUserTweets = AsyncHandler(async (req, res) => {
   // TODO: get user tweets
-  const tweets = await Tweet.find({owner : req.user._id});
+  const tweets = await Tweet.find({ owner: req.user._id });
 
-  if(tweets.length === 0){
-    throw new ApiError(400,"No tweets found")
+  if (tweets.length === 0) {
+    throw new ApiError(400, "No tweets found")
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200,tweets,"User all tweets fetched successfully")
+      new ApiResponse(200, tweets, "User all tweets fetched successfully")
     )
 })
 
@@ -47,6 +47,10 @@ const updateTweet = AsyncHandler(async (req, res) => {
   //TODO: update tweet
   const { tweetId } = req.params
   const { content } = req.body
+
+  if (!isValidObjectId(tweetId)) {
+    throw new ApiError(200, "Invalid tweet id")
+  }
 
   if (!content) {
     throw new ApiError(400, "Content is required")
@@ -78,6 +82,10 @@ const updateTweet = AsyncHandler(async (req, res) => {
 const deleteTweet = AsyncHandler(async (req, res) => {
   //TODO: delete tweet
   const { tweetId } = req.params
+
+   if (!isValidObjectId(tweetId)) {
+    throw new ApiError(200, "Invalid tweet id")
+  }
 
   await Tweet.findByIdAndDelete(tweetId)
 

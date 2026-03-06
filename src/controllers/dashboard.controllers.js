@@ -8,7 +8,7 @@ import AsyncHandler from "../utils/AsyncHandler.js";
 
 const getChannelStats = AsyncHandler(async (req, res) => {
   // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
-  const videosStats = await Video.aggregate(
+  const videosStat = await Video.aggregate(
     [
       {
         $match: { owner: req.user._id }
@@ -25,7 +25,7 @@ const getChannelStats = AsyncHandler(async (req, res) => {
 
   const videos = await Video.find({ owner: req.user._id }).select("_id")
 
-  const totalLikes = await Like.aggregate([
+  const likesCount = await Like.aggregate([
     {
       $match: { video: { $in: videos.map(video => video._id) } }
     },
@@ -34,10 +34,28 @@ const getChannelStats = AsyncHandler(async (req, res) => {
     }
   ])
 
+  const totalSubscriber = await Subscription.aggregate([
+    {
+      $match: { channel: req.user._id }
+    },
+    {
+      $group: {
+        _id: "$channel",
+        totalSubsciber: {
+          $sum: 1
+        }
+      }
+    }
+  ])
+
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { videosStats, totalLikes }, "User stats fetched successfully")
+      new ApiResponse(200, {
+        videosStats: { totalviews: videosStat[0]?.totalviews, totalVideos: videosStat[0]?.totalVideos },
+        totalLikes: likesCount[0]?.totalLikes,
+        totalSubscribers: totalSubscriber[0]?.totalSubsciber
+      }, "User stats fetched successfully")
     )
 
 })

@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose"
 import { Video } from "../models/video.model.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
@@ -50,7 +51,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
   );
 });
 
-// DONE
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body
   // TODO: get video, upload to cloudinary, create video
@@ -95,13 +95,12 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 })
 
-// DONE
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params
   //TODO: get video by id
 
-  if (!videoId) {
-    throw new ApiError(400, "Video id is required")
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(200, "Invalid video id")
   }
 
   const video = await Video.findById(videoId);
@@ -118,13 +117,13 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 })
 
-// DONE
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params
   //TODO: update video details like title, description, thumbnail
-  if (!videoId) {
-    throw new ApiError(400, "Video id is required")
+   if (!isValidObjectId(videoId)) {
+    throw new ApiError(200, "Invalid video id")
   }
+
 
   const { title, description } = req.body
 
@@ -155,13 +154,13 @@ const updateVideo = asyncHandler(async (req, res) => {
     )
 })
 
-// DONE
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params
   //TODO: delete video
-  if (!videoId) {
-    throw new ApiError(400, "Video id is required")
+   if (!isValidObjectId(videoId)) {
+    throw new ApiError(200, "Invalid video id")
   }
+
 
   await Video.findByIdAndDelete(videoId);
 
@@ -173,13 +172,13 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 })
 
-// DONE 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params
 
-  if (!videoId) {
-    throw new ApiError(400, "Video id is required")
+   if (!isValidObjectId(videoId)) {
+    throw new ApiError(200, "Invalid video id")
   }
+
 
   const video = await Video.findById(videoId);
 

@@ -6,7 +6,7 @@ const router = Router();
 
 router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
-router.route("/c/:channelId").get(getSubscribedChannels).post(toggleSubscription);
-router.route("/u/:subscriberId").get(getUserChannelSubscribers);
+router.route("/c/:channelId").post(toggleSubscription).get(getUserChannelSubscribers);
+router.route("/u/:subscriberId").get(getSubscribedChannels);       // List subscribers of channel
 
 export default router
